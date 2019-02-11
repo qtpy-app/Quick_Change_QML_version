@@ -51,6 +51,24 @@ class subForm(QWidget, Ui_Form):
         dia = self.findParent()
         dia.enableFindButton(self, close=True)
 
+    # ========================= quick input
+    @pyqtSlot()
+    def on_btn1_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.findtextCombo.setCurrentText("QtQuick 2.*")
+        self.replacetextCombo.setCurrentText("QtQuick 2.*")
+        self.regexpCheckBox.setChecked(True)
+    @pyqtSlot()
+    def on_btn2_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.findtextCombo.setCurrentText("QtQuick.Controls 2.*")
+        self.replacetextCombo.setCurrentText("QtQuick.Controls 2.*")
+        self.regexpCheckBox.setChecked(True)
+    # ========================= quick input
     @pyqtSlot(str)
     def on_findtextCombo_editTextChanged(self, text):
         """
@@ -59,19 +77,18 @@ class subForm(QWidget, Ui_Form):
 
         @param text (ignored)
         """
-
         self.findParent().enableFindButton(self)
 
-    @pyqtSlot(str)
-    def on_replacetextCombo_editTextChanged(self, text):
-        """
-        Private slot to handle the editTextChanged signal of the replace
-        text combo.
-
-        @param text (ignored)
-        """
-
-        self.findParent().enableFindButton(self)
+    # @pyqtSlot(str)
+    # def on_replacetextCombo_editTextChanged(self, text):
+    #     """
+    #     Private slot to handle the editTextChanged signal of the replace
+    #     text combo.
+    #
+    #     @param text (ignored)
+    #     """
+    #
+    #     self.findParent().enableFindButton(self)
 
     @pyqtSlot(str)
     def on_filterEdit_textEdited(self, text):

@@ -188,46 +188,58 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
         
         @param text (ignored)
         """
-        self.enableFindButton()
+        self.enableFindButton(False, False)
 
     def enableFindButton(self, sub=None, close=None):
         """
         Private slot called to enable the find button.
         """
+
+        def closeBtn():
+            self.findButton.setEnabled(False)
+            self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
+
+        def openBtn():
+            self.findButton.setEnabled(True)
+            self.findButton.setDefault(True)
+
         if self.dirPicker.currentText() == "":
-            self.findButton.setEnabled(False)
-            self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
+            closeBtn()
         elif os.path.exists(os.path.abspath(self.dirPicker.currentText())) is False:
-            self.findButton.setEnabled(False)
-            self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
+            closeBtn()
         elif sub is not None:
             if close is None:
                 if sub.findtextCombo.currentText() == "" or (sub.filterEdit.text() == "") \
-                        or (self.__replaceMode is False and sub.replacetextCombo.currentText() == "") \
-                        or (self.dirButton.isChecked() and (self.dirPicker.currentText() == "")):
-                    self.findButton.setEnabled(False)
-                    self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
-            else:
+                        or (self.__replaceMode is False and sub.replacetextCombo.currentText() == ""):
+                    closeBtn()
+                else:
+                    openBtn()
+            elif close is True:
                 subList = self.mdiArea.subWindowList()
                 for sub_ in subList:
                     sub__ = sub_.widget()
-                    if len(subList) > 1:
-                        if sub__ != sub:
-                            if sub__.findtextCombo.currentText() == "" or (sub__.filterEdit.text() == ""):
-                                self.findButton.setEnabled(False)
-                                self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
-                                break
-                            else:
-                                self.findButton.setEnabled(True)
-                                self.findButton.setDefault(True)
+
+                    if sub__ != sub:
+                        if sub__.findtextCombo.currentText() == "" or (sub__.filterEdit.text() == ""):
+                            closeBtn()
+                            break
+                        else:
+                            openBtn()
                     else:
-                        self.findButton.setEnabled(False)
-                        self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
+                        if len(subList) == 1:
+                            closeBtn()
+            elif close is False:
 
+                for sub_ in self.mdiArea.subWindowList():
+                    sub__ = sub_.widget()
 
+                    if sub__.findtextCombo.currentText() == "" or (sub__.filterEdit.text() == ""):
+                        closeBtn()
+                        break
+                    else:
+                        openBtn()
         else:
-            self.findButton.setEnabled(True)
-            self.findButton.setDefault(True)
+            openBtn()
 
     def on_buttonBox_clicked(self, button):
         """
@@ -370,7 +382,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             self.findProgressLabel.setPath(file)
 
             fn = file
-
+            print(fn)
             # read the file and split it into textlines
             try:
                 text, encoding, hashStr = Utilities.readEncodedFileWithHash(fn)
@@ -482,10 +494,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
                 self.findProgressLabel.setPath(file)
 
-                if self.projectButton.isChecked():
-                    fn = os.path.join(self.project.ppath, file)
-                else:
-                    fn = file
+                fn = file
 
                 # read the file and split it into textlines
                 try:
