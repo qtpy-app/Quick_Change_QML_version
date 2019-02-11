@@ -14,6 +14,21 @@
    <string>Find in Files</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
+   <property name="spacing">
+    <number>4</number>
+   </property>
    <item row="7" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
@@ -35,29 +50,30 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_12">
-     <item>
-      <widget class="QPushButton" name="add_btn">
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>2</number>
+     </property>
+     <property name="topMargin">
+      <number>2</number>
+     </property>
+     <property name="rightMargin">
+      <number>2</number>
+     </property>
+     <property name="bottomMargin">
+      <number>2</number>
+     </property>
+     <property name="horizontalSpacing">
+      <number>2</number>
+     </property>
+     <item row="0" column="5">
+      <widget class="QPushButton" name="clear_btn">
        <property name="text">
-        <string>Add</string>
+        <string>Clear</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QRadioButton" name="dirButton">
-       <property name="toolTip">
-        <string>Search in files of a directory tree to be entered below</string>
-       </property>
-       <property name="text">
-        <string>Find in 
-Directory tree</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
+     <item row="1" column="1" colspan="5">
       <widget class="E5ComboPathPicker" name="dirPicker" native="true">
        <property name="enabled">
         <bool>true</bool>
@@ -68,6 +84,12 @@ Directory tree</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
        <property name="focusPolicy">
         <enum>Qt::WheelFocus</enum>
        </property>
@@ -76,26 +98,23 @@ Directory tree</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="dirButton">
+       <property name="toolTip">
+        <string>Search in files of a directory tree to be entered below</string>
        </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="clear_btn">
        <property name="text">
-        <string>Clear</string>
+        <string>Find in Directory tree</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="add_btn">
+       <property name="text">
+        <string>Add</string>
        </property>
       </widget>
      </item>
@@ -162,6 +181,12 @@ Directory tree</string>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
      </property>
      <property name="text">
       <string/>

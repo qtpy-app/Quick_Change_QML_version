@@ -18,7 +18,7 @@ from collections import OrderedDict
 from PyQt5.QtCore import pyqtSignal, Qt, pyqtSlot
 from PyQt5.QtGui import QCursor, QFont
 from PyQt5.QtWidgets import QDialog, QApplication, QMenu, QDialogButtonBox, \
-    QTreeWidgetItem, QComboBox, QStyleFactory, QMdiSubWindow
+    QTreeWidgetItem, QComboBox, QStyleFactory, QMdiSubWindow, QFileDialog, QMessageBox
 
 from E5Gui.E5Application import e5App, E5Application
 from E5Gui import E5MessageBox
@@ -58,7 +58,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
     replaceRole = Qt.UserRole + 4
     md5Role = Qt.UserRole + 5
 
-    def __init__(self, parent=None,  replaceMode=True, ):
+    def __init__(self, parent=None, replaceMode=True, ):
         """
         Constructor
         
@@ -108,8 +108,6 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             self.replaceButton.hide()
 
         self.findProgressLabel.setMaximumWidth(550)
-
-
 
         self.findList.headerItem().setText(self.findList.columnCount(), "")
         self.findList.header().setSortIndicator(0, Qt.AscendingOrder)
@@ -210,16 +208,23 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
                     self.findButton.setEnabled(False)
                     self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
             else:
-                for sub_ in self.mdiArea.subWindowList():
+                subList = self.mdiArea.subWindowList()
+                for sub_ in subList:
                     sub__ = sub_.widget()
-                    if sub__ != sub:
-                        if sub__.findtextCombo.currentText() == "" or (sub__.filterEdit.text() == ""):
-                            self.findButton.setEnabled(False)
-                            self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
-                            break
-                        else:
-                            self.findButton.setEnabled(True)
-                            self.findButton.setDefault(True)
+                    if len(subList) > 1:
+                        if sub__ != sub:
+                            if sub__.findtextCombo.currentText() == "" or (sub__.filterEdit.text() == ""):
+                                self.findButton.setEnabled(False)
+                                self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
+                                break
+                            else:
+                                self.findButton.setEnabled(True)
+                                self.findButton.setDefault(True)
+                    else:
+                        self.findButton.setEnabled(False)
+                        self.buttonBox.button(QDialogButtonBox.Close).setDefault(True)
+
+
         else:
             self.findButton.setEnabled(True)
             self.findButton.setDefault(True)
@@ -237,9 +242,17 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             self.__stopSearch()
         elif button == self.importButton:
             self.clear_btn.click()
-            self.loadFromFile("./history.json")
+            fileName, ok = QFileDialog.getOpenFileName(self, "Open", "history.json", "Json (*.json)")
+            if fileName == '':
+                return
+            else:
+                self.loadFromFile(fileName)
         elif button == self.exportButton:
-            self.saveToFile("./history.json")
+            fileName, ok = QFileDialog.getSaveFileName(self, "Save", "history.json", "Json (*.json)")
+            if fileName == '':
+                return
+            else:
+                self.saveToFile(fileName)
         elif button == self.transButton:
             for sub in self.mdiArea.subWindowList():
                 sub = sub.widget()
@@ -590,17 +603,24 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
     # =================================
     def saveToFile(self, filename):
-        with open(filename, "w") as file:
-            file.write(json.dumps(self.serialize(), indent=4))
-            print("saving to", filename, "was successfull.")
+        try:
+            with open(filename, "w") as file:
+                file.write(json.dumps(self.serialize(), indent=4))
+                print("saving to", filename, "was successfull.")
 
-            self.has_been_modified = False
+                self.has_been_modified = False
+        except:
+
+            QMessageBox.warning(self, "error", "save json fail", QMessageBox.Ok)
 
     def loadFromFile(self, filename):
-        with open(filename, "r") as file:
-            raw_data = file.read()
-            data = json.loads(raw_data, encoding='utf-8')
-            self.deserialize(data)
+        try:
+            with open(filename, "r") as file:
+                raw_data = file.read()
+                data = json.loads(raw_data, encoding='utf-8')
+                self.deserialize(data)
+        except:
+            QMessageBox.warning(self, "error", "open json fail", QMessageBox.Ok)
 
     def serialize(self):
         """ÐòÁÐ»¯"""
@@ -625,6 +645,8 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
         self.mdiArea.tileSubWindows()
 
         self.dirPicker.setPath(data['path'])
+
+        self.enableFindButton(False, False)
         return True
 
 
