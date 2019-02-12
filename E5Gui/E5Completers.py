@@ -14,7 +14,7 @@ import os
 from PyQt5.QtCore import QDir, Qt, QStringListModel
 from PyQt5.QtWidgets import QCompleter, QFileSystemModel
 
-from Globals import isWindowsPlatform
+# from Globals import isWindowsPlatform
 
 
 class E5FileCompleter(QCompleter):

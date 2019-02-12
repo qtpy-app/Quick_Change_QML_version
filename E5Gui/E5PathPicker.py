@@ -24,7 +24,7 @@ from .E5LineEdit import E5ClearableLineEdit
 from .E5Completers import E5FileCompleter, E5DirCompleter
 from .E5ComboBox import E5ClearableComboBox
 
-import UI.PixmapCache
+# import UI.PixmapCache
 import Utilities
 
 
@@ -103,7 +103,7 @@ class E5PathPickerBase(QWidget):
         
         self.__button = QToolButton(self)
         self.__button.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        self.__button.setIcon(UI.PixmapCache.getIcon("open.png"))
+        # self.__button.setIcon(UI.PixmapCache.getIcon("open.png"))
         
         self.__layout.addWidget(self._editor)
         self.__layout.addWidget(self.__button)

@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 from PyQt5.QtCore import PYQT_VERSION_STR
 from PyQt5.QtWidgets import QFileDialog
 
-import Globals
+# import Globals
 
 Options = QFileDialog.Options
 Option = QFileDialog.Option
@@ -214,7 +214,9 @@ def getExistingDirectory(parent=None, caption="",
     @param options various options for the dialog (QFileDialog.Options)
     @return name of selected directory (string)
     """
-    if Globals.isLinuxPlatform():
+    from sys import platform as platform_
+
+    if platform_.startswith("linux"):
         options |= QFileDialog.DontUseNativeDialog
     return QFileDialog.getExistingDirectory(parent, caption, directory,
                                             options)

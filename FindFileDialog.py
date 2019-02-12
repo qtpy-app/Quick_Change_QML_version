@@ -26,10 +26,10 @@ from E5Gui.E5PathPicker import E5PathPickerModes
 
 from subWindow import subForm
 
-try:
-    from Ui_FindFileDialog import Ui_FindFileDialog
-except:
-    from .Ui_FindFileDialog import Ui_FindFileDialog
+# try:
+from Ui_FindFileDialog import Ui_FindFileDialog
+# except:
+#     from .Ui_FindFileDialog import Ui_FindFileDialog
 
 import Utilities
 
@@ -298,6 +298,8 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
         self.__cancelSearch = False
 
+        occurrences = 0
+        progress = 0
         for sub in self.mdiArea.subWindowList():
             sub = sub.widget()
             fileFilter = sub.filterEdit.text()
@@ -357,9 +359,9 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             # now go through all the files
             self.__populating = True
             self.findList.setUpdatesEnabled(False)
-            progress = 0
+
             breakSearch = False
-            occurrences = 0
+
             fileOccurrences = 0
 
             for file in files:
@@ -411,24 +413,27 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
                     QApplication.processEvents()
 
-            #     if found:
-            #         fileOccurrences += 1
-            #     progress += 1
-            #     self.findProgress.setValue(progress)
-            #
-            # if not files:
-            #     self.findProgress.setMaximum(1)
-            #     self.findProgress.setValue(1)
-            #
-            # resultFormat = self.tr("{0} / {1}", "occurrences / files")
-            # self.findProgressLabel.setPath(resultFormat.format(
-            #     self.tr("%n occurrence(s)", "", occurrences),
-            #     self.tr("%n file(s)", "", fileOccurrences)))
 
-            self.findList.setUpdatesEnabled(True)
-            self.findList.sortItems(self.findList.sortColumn(),
-                                    self.findList.header().sortIndicatorOrder())
-            self.findList.resizeColumnToContents(1)
+                self.findList.setUpdatesEnabled(True)
+                self.findList.sortItems(self.findList.sortColumn(),
+                                        self.findList.header().sortIndicatorOrder())
+                self.findList.resizeColumnToContents(1)
+                count_ = self.findList.topLevelItemCount()
+
+                if found:
+                    fileOccurrences += 1
+                    progress += 1
+                    self.findProgress.setValue(progress)
+            #
+            if not files:
+                self.findProgress.setMaximum(1)
+                self.findProgress.setValue(1)
+            #
+            resultFormat = self.tr("{0} / {1}", "occurrences / files")
+            self.findProgressLabel.setPath(resultFormat.format(
+                self.tr("%n occurrence(s)", "", occurrences),
+                self.tr("%n file(s)", "", count_)))
+
             if self.__replaceMode:
                 self.findList.header().resizeSection(0, self.__section0Size + 30)
             self.findList.header().setStretchLastSection(True)
@@ -441,8 +446,8 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             if breakSearch:
                 self.close()
         count_ = self.findList.topLevelItemCount()
-        self.findProgressLabel.setPath("")
-        self.findProgress.setValue(count_)
+        # self.findProgressLabel.setPath("")
+        # self.findProgress.setValue(count_)
         self.findProgress.setMaximum(count_)
 
     def __getFileList(self, path, filterRe):

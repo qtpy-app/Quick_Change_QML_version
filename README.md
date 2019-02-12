@@ -1,6 +1,8 @@
 # Quick_Change_QML_version
 A tools for change qml file version
 
-From eric6 ide's code, and change something. 
+Change something from eric6 ide's source code . 
+
+![How to use](./ScreenShot/ScreenShot.gif)
 
 

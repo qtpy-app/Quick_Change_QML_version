@@ -66,21 +66,21 @@ from PyQt5.QtCore import QRegExp, QDir, QProcess, Qt, QByteArray, \
 from PyQt5.Qsci import QSCINTILLA_VERSION_STR, QsciScintilla
 
 # import these methods into the Utilities namespace
-from Globals import (  # __IGNORE_WARNING__
-    isWindowsPlatform, isLinuxPlatform, isMacPlatform, getConfigDir,
-    setConfigDir, getPythonModulesDirectory, getPyQt5ModulesDirectory,
-    getQtBinariesPath, getPyQtToolsPath, qVersionTuple)
+# from Globals import (  # __IGNORE_WARNING__
+#     isWindowsPlatform, isLinuxPlatform, isMacPlatform, getConfigDir,
+#     setConfigDir, getPythonModulesDirectory, getPyQt5ModulesDirectory,
+#     getQtBinariesPath, getPyQtToolsPath, qVersionTuple)
 
 from E5Gui.E5Application import e5App
 
-from UI.Info import Program, Version
+# from UI.Info import Program, Version
 
-import Preferences
-from Plugins.CheckerPlugins.SyntaxChecker.SyntaxCheck import (
-    # __IGNORE_WARNING__
-    normalizeCode)
-
-from eric6config import getConfig
+# import Preferences
+# from Plugins.CheckerPlugins.SyntaxChecker.SyntaxCheck import (
+#     # __IGNORE_WARNING__
+#     normalizeCode)
+#
+# from eric6config import getConfig
 
 configDir = None
 

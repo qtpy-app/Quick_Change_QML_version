@@ -14,14 +14,14 @@ from PyQt5.QtGui import QPainter, QPalette
 from PyQt5.QtWidgets import QLineEdit, QStyle, QWidget, QHBoxLayout, \
     QBoxLayout, QLayout, QApplication, QSpacerItem, QSizePolicy
 
-from Globals import qVersionTuple
+# from Globals import qVersionTuple
 
-if qVersionTuple() >= (5, 0, 0):
-    from PyQt5.QtWidgets import QStyleOptionFrame
-else:
-    from PyQt5.QtWidgets import QStyleOptionFrameV2 as QStyleOptionFrame
 
-import UI.PixmapCache
+from PyQt5.QtWidgets import QStyleOptionFrame
+# else:
+#     from PyQt5.QtWidgets import QStyleOptionFrameV2 as QStyleOptionFrame
+
+# import UI.PixmapCache
 
 
 class E5LineEditSideWidget(QWidget):
@@ -70,10 +70,8 @@ class E5LineEdit(QLineEdit):
         
         self.setMinimumHeight(22)
         
-        if qVersionTuple() < (4, 7, 0):
-            self.__inactiveText = inactiveText
-        else:
-            self.setPlaceholderText(inactiveText)
+
+        self.setPlaceholderText(inactiveText)
         
         self.__mainLayout = QHBoxLayout(self)
         self.__mainLayout.setContentsMargins(0, 0, 0, 0)
@@ -157,24 +155,7 @@ class E5LineEdit(QLineEdit):
         """
         super(E5LineEdit, self).paintEvent(evt)
         
-        if qVersionTuple() < (4, 7, 0):
-            if not self.text() and \
-               self.__inactiveText and \
-               not self.hasFocus():
-                panel = QStyleOptionFrame()
-                self.initStyleOption(panel)
-                textRect = self.style().subElementRect(
-                    QStyle.SE_LineEditContents, panel, self)
-                textRect.adjust(2, 0, 0, 0)
-                left = self.textMargin(self.LeftSide)
-                right = self.textMargin(self.RightSide)
-                textRect.adjust(left, 0, -right, 0)
-                painter = QPainter(self)
-                painter.setPen(self.palette().brush(
-                    QPalette.Disabled, QPalette.Text).color())
-                painter.drawText(
-                    textRect, Qt.AlignLeft | Qt.AlignVCenter,
-                    self.__inactiveText)
+
     
     def _updateTextMargins(self):
         """
@@ -276,11 +257,8 @@ class E5LineEdit(QLineEdit):
         
         @param inactiveText text to be shown on inactivity (string)
         """
-        if qVersionTuple() < (4, 7, 0):
-            self.__inactiveText = inactiveText
-            self.update()
-        else:
-            self.setPlaceholderText(inactiveText)
+
+        self.setPlaceholderText(inactiveText)
 
 
 class E5ClearableLineEdit(E5LineEdit):
@@ -304,7 +282,7 @@ class E5ClearableLineEdit(E5LineEdit):
         
         from E5Gui.E5LineEditButton import E5LineEditButton
         self.__clearButton = E5LineEditButton(self)
-        self.__clearButton.setIcon(UI.PixmapCache.getIcon("clearLeft.png"))
+        # self.__clearButton.setIcon(UI.PixmapCache.getIcon("clearLeft.png"))
         self.addWidget(self.__clearButton, side)
         self.__clearButton.setVisible(False)
         
