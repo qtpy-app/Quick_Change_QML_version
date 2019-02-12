@@ -314,7 +314,6 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
             QApplication.processEvents()
             QApplication.processEvents()
-            self.findProgress.setMaximum(len(files))
 
             # retrieve the values
             reg = sub.regexpCheckBox.isChecked()
@@ -349,7 +348,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             if self.__replaceMode:
                 replTxt = sub.replacetextCombo.currentText()
 
-        # ======================================================
+            # ======================================================
             # set the button states
             self.stopButton.setEnabled(True)
             self.stopButton.setDefault(True)
@@ -412,19 +411,19 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
                     QApplication.processEvents()
 
-                if found:
-                    fileOccurrences += 1
-                progress += 1
-                self.findProgress.setValue(progress)
-
-            if not files:
-                self.findProgress.setMaximum(1)
-                self.findProgress.setValue(1)
-
-            resultFormat = self.tr("{0} / {1}", "occurrences / files")
-            self.findProgressLabel.setPath(resultFormat.format(
-                self.tr("%n occurrence(s)", "", occurrences),
-                self.tr("%n file(s)", "", fileOccurrences)))
+            #     if found:
+            #         fileOccurrences += 1
+            #     progress += 1
+            #     self.findProgress.setValue(progress)
+            #
+            # if not files:
+            #     self.findProgress.setMaximum(1)
+            #     self.findProgress.setValue(1)
+            #
+            # resultFormat = self.tr("{0} / {1}", "occurrences / files")
+            # self.findProgressLabel.setPath(resultFormat.format(
+            #     self.tr("%n occurrence(s)", "", occurrences),
+            #     self.tr("%n file(s)", "", fileOccurrences)))
 
             self.findList.setUpdatesEnabled(True)
             self.findList.sortItems(self.findList.sortColumn(),
@@ -441,6 +440,10 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
             if breakSearch:
                 self.close()
+        count_ = self.findList.topLevelItemCount()
+        self.findProgressLabel.setPath("")
+        self.findProgress.setValue(count_)
+        self.findProgress.setMaximum(count_)
 
     def __getFileList(self, path, filterRe):
         """
@@ -506,19 +509,20 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
                 # Check the original and the current hash. Skip the file,
                 # if hashes are different.
-                if origHash != hashStr:
-                    E5MessageBox.critical(
-                        self,
-                        self.tr("Replace in Files"),
-                        self.tr(
-                            """<p>The current and the original hash of the"""
-                            """ file <b>{0}</b> are different. Skipping it."""
-                            """</p><p>Hash 1: {1}</p><p>Hash 2: {2}</p>""")
-                            .format(fn, origHash, hashStr)
-                    )
-                    progress += 1
-                    self.findProgress.setValue(progress)
-                    continue
+
+                # if origHash != hashStr:
+                #     E5MessageBox.critical(
+                #         self,
+                #         self.tr("Replace in Files"),
+                #         self.tr(
+                #             """<p>The current and the original hash of the"""
+                #             """ file <b>{0}</b> are different. Skipping it."""
+                #             """</p><p>Hash 1: {1}</p><p>Hash 2: {2}</p>""")
+                #             .format(fn, origHash, hashStr)
+                #     )
+                #     progress += 1
+                #     self.findProgress.setValue(progress)
+                #     continue
 
                 # replace the lines authorized by the user
                 for cindex in range(itm.childCount()):
