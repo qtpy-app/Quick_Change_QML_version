@@ -178,7 +178,7 @@
      <item row="0" column="2">
       <widget class="QPushButton" name="btn3">
        <property name="text">
-        <string>PushButton</string>
+        <string>qrc</string>
        </property>
       </widget>
      </item>

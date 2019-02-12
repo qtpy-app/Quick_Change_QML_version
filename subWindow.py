@@ -68,6 +68,14 @@ class subForm(QWidget, Ui_Form):
         self.findtextCombo.setCurrentText("QtQuick.Controls 2.*")
         self.replacetextCombo.setCurrentText("QtQuick.Controls 2.*")
         self.regexpCheckBox.setChecked(True)
+    @pyqtSlot()
+    def on_btn3_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.findtextCombo.setCurrentText("qrc:")
+        self.replacetextCombo.setCurrentText("file:///"+self.findParent().projectPath)
+
     # ========================= quick input
     @pyqtSlot(str)
     def on_findtextCombo_editTextChanged(self, text):

@@ -121,7 +121,7 @@ class Ui_Form(object):
         self.caseCheckBox.setText(_translate("Form", "&Match upper/lower case"))
         self.wordCheckBox.setToolTip(_translate("Form", "Select to match whole words only"))
         self.wordCheckBox.setText(_translate("Form", "&Whole word"))
-        self.btn3.setText(_translate("Form", "PushButton"))
+        self.btn3.setText(_translate("Form", "qrc"))
         self.btn1.setText(_translate("Form", "QtQuick 2.*"))
         self.btn2.setText(_translate("Form", "Controls 2.*"))
         self.btn4.setText(_translate("Form", "PushButton"))

@@ -58,7 +58,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
     replaceRole = Qt.UserRole + 4
     md5Role = Qt.UserRole + 5
 
-    def __init__(self, parent=None, replaceMode=True, ):
+    def __init__(self, parent=None, replaceMode=True, projectPath=None):
         """
         Constructor
         
@@ -70,6 +70,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
         self.setupUi(self)
         self.setWindowFlags(Qt.Window)
 
+        
         self.dirPicker.setMode(E5PathPickerModes.DirectoryMode)
         self.dirPicker.setInsertPolicy(QComboBox.InsertAtTop)
         self.dirPicker.setSizeAdjustPolicy(
@@ -98,6 +99,10 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
                                      QDialogButtonBox.ActionRole)
         self.findButton.setEnabled(False)
         self.findButton.setDefault(True)
+        
+        if projectPath is not None:
+            self.projectPath = projectPath.replace("\\","/")
+            self.dirPicker.setPath(self.projectPath)        
 
         if self.__replaceMode:
             self.replaceButton.setEnabled(False)
