@@ -297,7 +297,7 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
         #     return
 
         self.__cancelSearch = False
-        files = []
+
         for sub in self.mdiArea.subWindowList():
             sub = sub.widget()
             fileFilter = sub.filterEdit.text()
@@ -308,11 +308,9 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
             filterRe = re.compile("|".join(fileFilterList))
 
             # 开始查找
-            files_ = self.__getFileList(
+            files = self.__getFileList(
                 os.path.abspath(self.dirPicker.currentText()),
                 filterRe)
-
-            files.extend(files_)
 
             QApplication.processEvents()
             QApplication.processEvents()
@@ -350,107 +348,99 @@ class FindFileDialog(QDialog, Ui_FindFileDialog):
 
             if self.__replaceMode:
                 replTxt = sub.replacetextCombo.currentText()
-                # if replTxt in self.replaceHistory:
-                #     self.replaceHistory.remove(replTxt)
-                # self.replaceHistory.insert(0, replTxt)
-                # self.replacetextCombo.clear()
-                # self.replacetextCombo.addItems(self.replaceHistory)
-                # Preferences.Prefs.settings.setValue(
-                #     "FindFileDialog/ReplaceHistory",
-                #     self.replaceHistory[:30])
 
         # ======================================================
-        # set the button states
-        self.stopButton.setEnabled(True)
-        self.stopButton.setDefault(True)
-        self.findButton.setEnabled(False)
+            # set the button states
+            self.stopButton.setEnabled(True)
+            self.stopButton.setDefault(True)
+            self.findButton.setEnabled(False)
 
-        # now go through all the files
-        self.__populating = True
-        self.findList.setUpdatesEnabled(False)
-        progress = 0
-        breakSearch = False
-        occurrences = 0
-        fileOccurrences = 0
+            # now go through all the files
+            self.__populating = True
+            self.findList.setUpdatesEnabled(False)
+            progress = 0
+            breakSearch = False
+            occurrences = 0
+            fileOccurrences = 0
 
-        for file in files:
-            self.__lastFileItem = None
-            found = False
-            if self.__cancelSearch or breakSearch:
-                break
-
-            self.findProgressLabel.setPath(file)
-
-            fn = file
-            print(fn)
-            # read the file and split it into textlines
-            try:
-                text, encoding, hashStr = Utilities.readEncodedFileWithHash(fn)
-                lines = text.splitlines(True)
-            except (UnicodeError, IOError):
-                progress += 1
-                self.findProgress.setValue(progress)
-                continue
-
-            # now perform the search and display the lines found
-            count = 0
-            for line in lines:
-                if self.__cancelSearch:
+            for file in files:
+                self.__lastFileItem = None
+                found = False
+                if self.__cancelSearch or breakSearch:
                     break
 
-                count += 1
-                contains = search.search(line)
-                if contains:
-                    occurrences += 1
-                    found = True
-                    start = contains.start()
-                    end = contains.end()
-                    if self.__replaceMode:
-                        rline = search.sub(replTxt, line)
-                    else:
-                        rline = ""
-                    line = self.__stripEol(line)
-                    if len(line) > 1024:
-                        line = "{0} ...".format(line[:1024])
-                    if self.__replaceMode:
-                        if len(rline) > 1024:
-                            rline = "{0} ...".format(line[:1024])
-                        line = "- {0}\n+ {1}".format(
-                            line, self.__stripEol(rline))
-                    self.__createItem(file, count, line, start, end,
-                                      rline, hashStr)
+                self.findProgressLabel.setPath(file)
 
-                QApplication.processEvents()
+                fn = file
 
-            if found:
-                fileOccurrences += 1
-            progress += 1
-            self.findProgress.setValue(progress)
+                # read the file and split it into textlines
+                try:
+                    text, encoding, hashStr = Utilities.readEncodedFileWithHash(fn)
+                    lines = text.splitlines(True)
+                except (UnicodeError, IOError):
+                    progress += 1
+                    self.findProgress.setValue(progress)
+                    continue
 
-        if not files:
-            self.findProgress.setMaximum(1)
-            self.findProgress.setValue(1)
+                # now perform the search and display the lines found
+                count = 0
+                for line in lines:
+                    if self.__cancelSearch:
+                        break
 
-        resultFormat = self.tr("{0} / {1}", "occurrences / files")
-        self.findProgressLabel.setPath(resultFormat.format(
-            self.tr("%n occurrence(s)", "", occurrences),
-            self.tr("%n file(s)", "", fileOccurrences)))
+                    count += 1
+                    contains = search.search(line)
+                    if contains:
+                        occurrences += 1
+                        found = True
+                        start = contains.start()
+                        end = contains.end()
+                        if self.__replaceMode:
+                            rline = search.sub(replTxt, line)
+                        else:
+                            rline = ""
+                        line = self.__stripEol(line)
+                        if len(line) > 1024:
+                            line = "{0} ...".format(line[:1024])
+                        if self.__replaceMode:
+                            if len(rline) > 1024:
+                                rline = "{0} ...".format(line[:1024])
+                            line = "- {0}\n+ {1}".format(
+                                line, self.__stripEol(rline))
+                        self.__createItem(file, count, line, start, end,
+                                          rline, hashStr)
 
-        self.findList.setUpdatesEnabled(True)
-        self.findList.sortItems(self.findList.sortColumn(),
-                                self.findList.header().sortIndicatorOrder())
-        self.findList.resizeColumnToContents(1)
-        if self.__replaceMode:
-            self.findList.header().resizeSection(0, self.__section0Size + 30)
-        self.findList.header().setStretchLastSection(True)
-        self.__populating = False
+                    QApplication.processEvents()
 
-        self.stopButton.setEnabled(False)
-        self.findButton.setEnabled(True)
-        self.findButton.setDefault(True)
+                if found:
+                    fileOccurrences += 1
+                progress += 1
+                self.findProgress.setValue(progress)
 
-        if breakSearch:
-            self.close()
+            if not files:
+                self.findProgress.setMaximum(1)
+                self.findProgress.setValue(1)
+
+            resultFormat = self.tr("{0} / {1}", "occurrences / files")
+            self.findProgressLabel.setPath(resultFormat.format(
+                self.tr("%n occurrence(s)", "", occurrences),
+                self.tr("%n file(s)", "", fileOccurrences)))
+
+            self.findList.setUpdatesEnabled(True)
+            self.findList.sortItems(self.findList.sortColumn(),
+                                    self.findList.header().sortIndicatorOrder())
+            self.findList.resizeColumnToContents(1)
+            if self.__replaceMode:
+                self.findList.header().resizeSection(0, self.__section0Size + 30)
+            self.findList.header().setStretchLastSection(True)
+            self.__populating = False
+
+            self.stopButton.setEnabled(False)
+            self.findButton.setEnabled(True)
+            self.findButton.setDefault(True)
+
+            if breakSearch:
+                self.close()
 
     def __getFileList(self, path, filterRe):
         """
